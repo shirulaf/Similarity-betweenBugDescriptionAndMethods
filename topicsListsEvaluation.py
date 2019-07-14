@@ -1,6 +1,6 @@
 import json
 import csv
-
+import operator
 import matplotlib.pyplot as plt
 import statistics
 import numpy as np
@@ -36,7 +36,8 @@ def mapBugsAndMethods():
     with open('dataFiles/bugs_lang.json', 'r') as bugs_reader:
         bugs_data_dic = json.load(bugs_reader)
 
-    bugsIds_list = list(bugs_data_dic.keys())
+    bugsIds_list = sorted(list(map(lambda k: int(k), list(bugs_data_dic.keys()))))
+    bugsIds_list = list(map(lambda k: str(k), bugsIds_list))
 
     with open('dataFiles/methods_lang_clean.json', 'r') as methods_reader:
         methods_data_dic = json.load(methods_reader)
@@ -63,24 +64,19 @@ def mapBugsAndMethods():
                 methods_data_dic[methodsIds_list[num]] = [num, topics]
 
             else:
-                method_list = bugs_data_dic[bugsIds_list[num - len(methodsIds_list)]][1]
-
-                # filter bugs with very high number of methods
-                if len(method_list)> BUGS_METHODS_NUMBER_THRESHOLD:
-                    del bugs_data_dic[bugsIds_list[num - len(methodsIds_list)]]
-                    # print(len(method_list))
-                    continue
+                bug = bugsIds_list[num - len(methodsIds_list)]
+                method_list = bugs_data_dic[bug][1]
 
 
-                bugs_data_dic[bugsIds_list[num - len(methodsIds_list)]][0] = num
-                bugs_data_dic[bugsIds_list[num - len(methodsIds_list)]][1] = topics
+                bugs_data_dic[bug][0] = num
+                bugs_data_dic[bug][1] = topics
                 bugsNumOfMethods.append(len(method_list))
 
                 method_list_numbered = []
                 for m in method_list:
                     method_list_numbered.append(methods_data_dic[m][0])
 
-                bugs_data_dic[bugsIds_list[num - len(methodsIds_list)]].append(method_list_numbered)
+                bugs_data_dic[bug].append(method_list_numbered)
 
     # plotNumOfMethodsPerBugHist(bugsNumOfMethods)
 
@@ -176,7 +172,11 @@ def mapTopicsToMethods():
 
 
 def evaluateMethod1_ByFullListOutput( percentagesEvaluation):
-
+    found = 0
+    notFound =0
+    count=0
+    m_counter = 0
+    bm_counter = 0
     bugsHitCounter = {}
     numIterations = 0
 
@@ -186,11 +186,17 @@ def evaluateMethod1_ByFullListOutput( percentagesEvaluation):
     TotalBugsMethodsNum = 0
     for bug, data in bugs_data_dic.items():
 
+        if len(set(data[2])) > BUGS_METHODS_NUMBER_THRESHOLD:
+            continue
+
         topics = data[1]
 
         #get tagged data of bugs methods
-        bugMethodsId_Tagged =  data[2]
-        TotalBugsMethodsNum += len(data[2])
+        bugMethodsId_Tagged =  set(data[2])
+        TotalBugsMethodsNum += len(bugMethodsId_Tagged)
+
+
+
 
         #  get the bug methods from the model according to topic
         topicMethodList = []
@@ -215,8 +221,8 @@ def evaluateMethod1_ByFullListOutput( percentagesEvaluation):
         for per in percentagesEvaluation:
 
 
-            if len(bugMethodsId_Tagged) == 0:
-                break
+            # if len(bugMethodsId_Tagged) == 0:
+            #     break
 
             numIterations +=1
 
@@ -226,19 +232,32 @@ def evaluateMethod1_ByFullListOutput( percentagesEvaluation):
 
             hitCounter = len(set(partList).intersection(set(bugMethodsId_Tagged)))
 
-            bugsHitCounter[per] += hitCounter
             #     print("bug:{}, Per:{} , num:{}/{}".format(data[0],per, hitCounter, len(bugMethodsId_Tagged)))
 
-            startList = counter
 
             if hitCounter>0:
-                inters = (set(partList).intersection(set(bugMethodsId_Tagged)))
                 s1 = set(bugMethodsId_Tagged)
                 s2 = set(partList)
                 s1.difference_update(s2)
                 bugMethodsId_Tagged = list(s1)
 
+                #--- enable this is you would like to test total number of methods not only by bugs
+                # bugsHitCounter[per] += hitCounter
+                # found += 1
+
+                if len(bugMethodsId_Tagged) == 0 :
+                    # --- enable this is you would like to test number of methods by bugs
+                    bugsHitCounter[per] += 1
+                    found += 1
+                    break
+
+
+
+            startList = counter
                 # print()
+
+    print(sum, count)
+    print("found", found, "not found" , notFound , "total", found+notFound)
 
 
 
@@ -267,9 +286,9 @@ def evaluateMethod1_ByFullListOutput( percentagesEvaluation):
 
 
 
-trsh = [0, 0.01, 0.05, 0.07, 0.1  ]
+trsh = [0.01  ]
 
-within_trsh = np.arange(0.5,1.05, 0.05)
+within_trsh = [0.01]
 
 
 for t in trsh:
