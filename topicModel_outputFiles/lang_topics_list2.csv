@@ -1,7 +1,0 @@
-0,[('java', 0.047), ('lang', 0.032), ('code', 0.031), ('common', 0.025), ('apache', 0.021), ('object', 0.02), ('org', 0.019), ('class', 0.017), ('test', 0.016), ('null', 0.013)]
-1,[('oliver', 0.092), ('commit', 0.07), ('date', 0.058), ('add', 0.053), ('author', 0.05), ('heger', 0.05), ('oheger', 0.033), ('jun', 0.033), ('tue', 0.025), ('implementation', 0.024)]
-2,[('add', 0.119), ('fix', 0.062), ('checkstyle', 0.041), ('final', 0.031), ('method', 0.031), ('consistent', 0.03), ('github', 0.029), ('make', 0.029), ('whitespace', 0.026), ('rule', 0.025)]
-3,[('local', 0.094), ('variable', 0.093), ('final', 0.087), ('modifi', 0.084), ('add', 0.081), ('format', 0.039), ('set', 0.035), ('calendar', 0.032), ('replace', 0.029), ('refactor', 0.026)]
-4,[('method', 0.081), ('type', 0.051), ('string', 0.045), ('charsequence', 0.035), ('stringutil', 0.03), ('foo', 0.029), ('int', 0.029), ('return', 0.029), ('class', 0.027), ('call', 0.024)]
-5,[('fastdateformat', 0.114), ('package', 0.095), ('dateparser', 0.089), ('implementation', 0.07), ('subsequent', 0.06), ('honton', 0.06), ('integration', 0.06), ('cha', 0.06), ('formatcache', 0.058), ('apply', 0.05)]
-6,[('space', 0.067), ('remove', 0.066), ('trail', 0.061), ('support', 0.061), ('white', 0.053), ('time', 0.045), ('make', 0.035), ('line', 0.033), ('week', 0.03), ('year', 0.03)]
